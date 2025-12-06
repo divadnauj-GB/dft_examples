@@ -17,4 +17,6 @@ croc/
 *.fau
 
 *.list
+*.txt
+*.sdc
 

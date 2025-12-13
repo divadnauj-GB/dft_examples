@@ -24,7 +24,7 @@ set tessent_tck_period 200.0
 elaborate ${design_name}
 set_app_var timing_enable_multiple_clocks_per_reg true
 set tessent_lbist_shift_clock_src(lbist_inst0) clk_i
-create_clock clk_i -period 10 -name clk_i
+create_clock clk_i -period 20 -name clk_i
 tessent_create_functional_clocks
 tessent_constrain_${design_name}_non_modal
 set_app_var compile_enable_constant_propagation_with_no_boundary_opt false
@@ -32,7 +32,7 @@ set preserve_instances [tessent_get_preserve_instances ${preserve_type}]
 set_boundary_optimization $preserve_instances false
 set_ungroup $preserve_instances false
 
-# source ../croc/rtl/croc_soc.sdc
+source ../croc/rtl/croc_soc.sdc
 set compile_seqmap_enable_output_inversion true
 set compile_seqmap_propagate_high_effort true
 set compile_delete_unloaded_sequential_cells false

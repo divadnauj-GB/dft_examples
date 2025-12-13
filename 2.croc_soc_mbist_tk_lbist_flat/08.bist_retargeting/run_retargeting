@@ -60,10 +60,11 @@ set_system_mode analysis
 set spec [ create_patterns_specification ]
 
 #add_config_element -in_wrapper $spec/Patterns(LogicBist_croc_chip)/AdvancedOptions/ConstantPortSettings rst_ni -value 1
-set_config_value end_pattern -in $spec/Patterns(LogicBist_croc_chip)/TestStep(serial_load)/LogicBist/CoreInstance(.) 7
+set_config_value end_pattern -in $spec/Patterns(LogicBist_croc_chip)/TestStep(serial_load)/LogicBist/CoreInstance(.) 1023
+set_config_value misr_compares -in $spec/Patterns(LogicBist_croc_chip)/TestStep(serial_load)/LogicBist/CoreInstance(.) 1
 set_config_value logic_bist_debug -in $spec/Patterns(LogicBist_croc_chip)/SimulationOptions bist_registers_and_clock_verify
 set_config_value begin_pattern -in $spec/Patterns(LogicBist_croc_chip)/TestStep(diagnosis)/LogicBist/CoreInstance(.) 1
-set_config_value end_pattern -in $spec/Patterns(LogicBist_croc_chip)/TestStep(diagnosis)/LogicBist/CoreInstance(.) 2
+set_config_value end_pattern -in $spec/Patterns(LogicBist_croc_chip)/TestStep(diagnosis)/LogicBist/CoreInstance(.) 1
 set_config_value warmup_pattern_count -in $spec/Patterns(LogicBist_croc_chip)/TestStep(diagnosis)/LogicBist/CoreInstance(.) 4
 set_config_value warmup_pattern_count -in $spec/Patterns(LogicBist_croc_chip)/TestStep(serial_load)/LogicBist/CoreInstance(.) 4
 set_config_value extract_flop_data -in $spec/Patterns(LogicBist_croc_chip)/TestStep(serial_load)/LogicBist/CoreInstance(.)/DiagnosisOptions on
@@ -78,6 +79,8 @@ report_pin_constraints
 
 set_simulation_library_sources -v ${PDK_ROOT}/ihp-sg13g2/libs.ref/sg13g2_stdcell/verilog/sg13g2_stdcell.v -v ${PDK_ROOT}/ihp-sg13g2/libs.ref/sg13g2_io/verilog/sg13g2_io.v -v ${PDK_ROOT}/ihp-sg13g2/libs.ref/sg13g2_sram/verilog/*.v 
 # the simulation option (-voptargs="+acc") is necessary for LBIST simulation
-run_testbench_simulations -store_simulation_waveforms on -compilation_options {verilog {+define+FUNCTIONAL}} -simulator_options { -voptargs="+acc" +nowarnTSCALE -debugDB -quiet} -wait
+#run_testbench_simulations -store_simulation_waveforms on -compilation_options {verilog {+define+FUNCTIONAL}} -simulator_options { -voptargs="+acc" +nowarnTSCALE -debugDB -quiet} -wait
+run_testbench_simulations -compilation_options {verilog {+define+FUNCTIONAL}} -simulator_options { -voptargs="+acc" +nowarnTSCALE -quiet} -wait
+
 check_testbench_simulations -report_status  
 exit

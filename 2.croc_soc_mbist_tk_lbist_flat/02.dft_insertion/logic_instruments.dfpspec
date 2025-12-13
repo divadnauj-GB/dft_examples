@@ -30,11 +30,11 @@
         cycle(1): OCC(jtag_tck_i);
       }
       Ncp(single_pulse) {
-        cycle(0): OCC(clk_i);
+        cycle(0): OCC(clk_i), OCC(jtag_tck_i);
       }
       Ncp(double_pulse) {
-        cycle(0): OCC(clk_i);
-        cycle(1): OCC(clk_i);
+        cycle(0): OCC(clk_i), OCC(jtag_tck_i);
+        cycle(1): OCC(clk_i), OCC(jtag_tck_i);
       }
       Ncp(bscan_occ) {
         cycle(0): bscan_occ   ; 

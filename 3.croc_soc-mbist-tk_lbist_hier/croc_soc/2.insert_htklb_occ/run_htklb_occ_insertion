@@ -78,7 +78,9 @@ check_design_rules
 
 set spec [create_dft_specification -sri_sib_list { occ edt lbist } ]
 
-
+read_config_data -in $spec -from_string {
+add_persistent_buffers_in_scan_resource_instruments : on;
+}
 # Use report_config_syntax DftSpecification/edt|occ to see full syntax
 report_config_data $spec
 

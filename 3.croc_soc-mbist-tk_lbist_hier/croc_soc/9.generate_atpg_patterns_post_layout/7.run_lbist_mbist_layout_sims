@@ -1,0 +1,43 @@
+#! /bin/sh -f
+#\
+exec tessent -shell -log logfiles/$0.log -replace -dofile "$0"
+set PDK_ROOT ../../../tech
+
+
+set_context patterns -ijtag -design_id post_layout
+set_tsdb_output_directory ../tsdb_outdir
+
+# Read the Tessent cell library
+read_cell_library ${PDK_ROOT}/tessent/ihp-sg13g2_stdcell.tcelllib
+read_cell_library ${PDK_ROOT}/tessent/ihp-sg13g2_io.tcelllib
+
+# Read the post-layout netlist
+read_design croc_soc -design_id post_layout -verbose
+
+set_current_design croc_soc
+add_black_boxes -modules { \
+                    RM_IHPSG13_1P_256x64_c2_bm_bist \
+             }
+
+add_clock 0 clk_i -period 10ns
+add_clocks 0 jtag_tck_i -period 100ns 
+
+add_input_constraints rst_ni -C1
+add_input_constraints jtag_trst_ni -C1
+
+report_static_dft_signal_settings
+report_clocks
+
+check_design_rules
+
+create_patterns_specification
+
+process_patterns_specification
+
+set_simulation_library_sources -v ${PDK_ROOT}/ihp-sg13g2/libs.ref/sg13g2_stdcell/verilog/sg13g2_stdcell.v -v ${PDK_ROOT}/ihp-sg13g2/libs.ref/sg13g2_io/verilog/sg13g2_io.v -v ${PDK_ROOT}/ihp-sg13g2/libs.ref/sg13g2_sram/verilog/*.v 
+run_testbench_simulations -simulator_option { -voptargs="+acc" } -compilation_options {verilog {+define+TETRAMAX +define+FUNCTIONAL}} -simulation_macro_definitions { MGC_DISABLE_CLOCK_MONITOR }
+
+# Disable clock monitoring when running simulation on post-layout netlist
+check_testbench_simulations -report_status
+
+exit

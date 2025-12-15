@@ -30,7 +30,7 @@ read_design croc_soc  -design_id gate1 -verbose
 set_current_design croc_soc
 
 
-set_current_mode edt_stuck
+set_current_mode edt_int_stuck
 import_scan_mode int_mode -verbose 
 report_dft_signals
 

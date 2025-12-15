@@ -1,0 +1,61 @@
+#! /bin/sh -f
+#\
+exec tessent -shell -log logfiles/$0.log -replace -dofile "$0"
+set PDK_ROOT ../../../tech
+
+
+set_context patterns -scan -design_id post_layout
+
+# Set the location of the TSDB. Default is the current working directory.
+set_tsdb_output_directory ../tsdb_outdir
+
+# Read the cell library
+read_cell_library ${PDK_ROOT}/tessent/ihp-sg13g2_stdcell.tcelllib
+read_cell_library ${PDK_ROOT}/tessent/ihp-sg13g2_io.tcelllib
+
+# Read in the post-layout netlist
+read_design croc_soc -design_id post_layout -verbose
+
+set_current_design croc_soc
+add_black_boxes -modules { \
+                    RM_IHPSG13_1P_256x64_c2_bm_bist \
+             }
+
+# Specify the current mode using a different name than what was used during scan insertion with add_scan_mode command
+set_current_mode edt_int_SAF -type internal
+
+# Use the -design_id and -mode from pre-layout to read in the TCD of that mode
+add_core_instance -current_design -design_id gate1 -mode edt_int_stuck 
+#edt_int_stuck
+
+report_dft_signals
+
+set_system_mode analysis
+report_clocks
+report_core_instances
+
+add_fault -all
+report_statistics -detail
+
+# Generate Patterns
+create_patterns
+report_statistics -detail
+
+# Store TCD, flat_model, fault list and patDB format files in the TSDB directory
+write_tsdb_data -replace
+
+# Write Verilog patterns for simulation
+write_patterns patterns/croc_soc_stuck_parallel.v -verilog -parallel -replace -parameter_list {SIM_KEEP_PATH 1}
+set_pattern_filtering -sample_per_type 2
+write_patterns patterns/croc_soc_stuck_serial.v -verilog -serial -replace -parameter_list {SIM_KEEP_PATH 1}
+
+# Optional Step - Can run in external mode and calculate the fault coverage of the core(both Internal and External) as described  below
+# In order to understand the coverage of the faults testable by Internal mode it is necessary to
+# eliminate the undetected faults that would otherwise be detected in External mode.  This is done
+# by merging the fault list from running the graybox in External mode
+#read_faults -mode ext_multi_stuck -fault_type stuck -merge -verbose
+
+# Final coverage of the core that includes both Internal and External modes
+#report_statistics -detail
+
+exit

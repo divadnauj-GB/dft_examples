@@ -33,12 +33,10 @@ foreach_in_collection mode_wrapper [get_config_elements Core(croc_soc)/Scan/Mode
   set mode_type [get_config_value type -in $mode_wrapper]
   import_scan_mode $mode_name
   check_design_rules
-  if {$mode_type eq "external"} {
+
     report_scan_cells
-    analyze_graybox
-    write_design -tsdb -graybox -verbose
-    write_core_description ./croc_soc_gray_box.tcd -replace
-  }
+    write_core_description ./croc_soc_${mode_name}.tcd -replace
+
   set_system_mode setup
 
 }

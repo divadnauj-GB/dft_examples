@@ -1,0 +1,53 @@
+#! /bin/sh -f
+#\
+exec tessent -shell -log logfiles/$0.log -replace -dofile "$0"
+set PDK_ROOT ../../../tech
+
+# Set the context and specify design_id as post_layout
+set_context patterns -scan -design_id post_layout
+
+# Set the location of the TSDB. Default is the current working directory.
+set_tsdb_output_directory ../tsdb_outdir
+
+# Read the cell library
+read_cell_library ${PDK_ROOT}/tessent/ihp-sg13g2_stdcell.tcelllib
+read_cell_library ${PDK_ROOT}/tessent/ihp-sg13g2_io.tcelllib
+
+# Read in the post-layout netlist
+read_design croc_soc -design_id post_layout -verbose
+
+set_current_design croc_soc
+
+add_black_boxes -modules { \
+                    RM_IHPSG13_1P_256x64_c2_bm_bist \
+             }
+
+
+report_dft_signals
+
+# If you cannot use import_scan_mode for post_layout netlist
+#import_scan_mode ext_mode
+  read_core_description ../7.generate_atpg_patterns/croc_soc_gray_box.tcd
+  add_core_instances -current_design -mode ext_mode
+  check_design_rules
+    report_scan_cells
+
+# If IJTAG network is ungroupped in layout then need to find and add them manually to preserve them
+# Get the icl_instances, then find the tessent_design_instance name attribute, to find all the instances to be preserved in the graybox
+    set to_be_preserved {}
+    foreach_in_collection inst [get_icl_instances *tessent_*] {
+    puts [get_attribute_value_list $inst -name tessent_design_instance]
+    if { [get_attribute_value_list $inst -name tessent_design_not_found ] } {
+        puts [get_name_list [get_instances [get_attribute_value_list $inst -name tessent_design_instance]/*] ]
+        append_to_collection to_be_preserved [get_instances [get_attribute_value_list $inst -name tessent_design_instance]/*]
+      } else {
+        puts [get_name_list [get_instances [get_attribute_value_list $inst -name tessent_design_instance] ] ]
+        append_to_collection to_be_preserved [get_instances [get_attribute_value_list $inst -name tessent_design_instance] ]
+      }
+    
+    #append_to_collection to_be_preserved [get_instances [get_attribute_value_list $inst -name tessent_design_instance]/*]
+    }
+    analyze_graybox -preserve_instance $to_be_preserved
+    write_design -tsdb -graybox -verbose
+
+exit

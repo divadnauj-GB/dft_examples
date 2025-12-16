@@ -2,6 +2,7 @@
 #\
 cd 1.insert_bscan
 
+rm -rf ../tsdb_outdir
 cd ../1.insert_bscan
 ./run_bscan_insertion
 

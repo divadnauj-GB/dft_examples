@@ -40,6 +40,15 @@ report_clocks
 set edt_instance [get_name_list [get_instance -of_module [get_name [get_icl_module -of_instances croc_chip_top* -filter  tessent_instrument_type==mentor::edt]]] ]
 add_scan_mode edt_mode -edt_instance $edt_instance
 
+# Controller_chain_mode
+#building a single chain for all ccm mode IP in all the cores and top level MM controller
+set_attribute_value [get_instance i_croc_soc ] -name active_child_scan_mode -value controller_chain_mode
+
+create_scan_chain_family ccm_mm_top -include_elements [get_scan_elements -of_child_scan_mode controller_chain_mode]
+add_scan_mode controller_chain_mode  -include_chain_families {ccm_mm_top}  -include_elements  {controller_chain_mode/i_croc_soc/ccm_scan_out0 } -si_connections [get_single_name [get_auxiliary_pins unused4_i -direction input]] -so_connection [get_single_name [get_auxiliary_pins unused5_o -direction output] ] -si_associated_ports unused4_i -so_associated_ports unused5_o -enable_dft_signal controller_chain_mode
+
+
+
 # Analyze the scan chains and review the different scan modes and chains
 analyze_scan_chains
 report_scan_chains

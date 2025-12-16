@@ -70,7 +70,7 @@ write_patterns patterns/croc_chip_top_edt_stuck.stil -stil -replace
 
 # Total coverage for stuck-at patterns at the chip-level including the child wrapped cores
 read_faults -module croc_soc -fault_type stuck -mode edt_int_stuck -merge -graybox
-read_faults -fault_type stuck -mode edt_top_stuck -merge 
+read_faults -design_id post_layout -fault_type stuck -mode edt_top_stuck -merge 
 
 
 report_statistics -detail

@@ -70,7 +70,7 @@ add_dft_signals memory_bypass_en
 set_dft_specification_requirement -logic_test on
 add_dft_signals int_mode ext_mode int_ltest_en ext_ltest_en
 
-add_clocks 0 jtag_tck_i -period 10ns 
+add_clocks 0 jtag_tck_i -period 100ns 
 
 add_dft_control_points testmode_i  -dft_signal_source_name all_test -inverse_dft_signal_source
 

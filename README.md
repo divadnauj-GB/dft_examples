@@ -18,3 +18,7 @@ Helper diagrams to be added here
 
 [!NOTE]
 Helper diagrams to be added here 
+
+# Examples work in progress
+- [4. Gate-level Dft insertion](./)
+- [5. sub-block Dft insertion](./)

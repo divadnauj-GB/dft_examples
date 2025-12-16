@@ -46,4 +46,17 @@ rm -rf patterns/*
 rm -rf work
 ./run_ccm_pattern
 
+cd ../netlist
+./run_dc_postlayout
+
+cd ../9.generate_atpg_patterns_post_layout
+./0.write_design_in_tsdb
+./1.run_graybox_generation
+./2.run_internal_stuck
+./3.run_internal_transition
+./4.run_sims
+./5.export_pre_layout_modes
+./6.run_lbist_layout_fsims
+./7.run_lbist_mbist_layout_sims
+
 cd ../

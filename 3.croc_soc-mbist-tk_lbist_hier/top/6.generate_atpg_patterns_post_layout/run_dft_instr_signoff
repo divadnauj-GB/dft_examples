@@ -42,7 +42,7 @@ add_input_constraints jtag_trst_ni -C1
 #set_static_dft_signal_value force_testmode_i_zero 0
 
 add_clocks 0 clk_i -period 10ns
-add_clocks 0 jtag_tck_i -period 100ns
+add_clocks 0 jtag_tck_i -period 10ns
 add_clocks 0 unused2_i -period 100ns
 
 report_static_dft_signal_settings

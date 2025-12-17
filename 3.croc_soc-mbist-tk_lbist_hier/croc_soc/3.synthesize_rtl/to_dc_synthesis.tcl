@@ -21,7 +21,7 @@ check_design
 
 #define functional clock 
 create_clock -period 10.0 clk_i
-create_clock -period 100.0 jtag_tck_i
+create_clock -period 10.0 jtag_tck_i
 
 
 

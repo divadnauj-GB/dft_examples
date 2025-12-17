@@ -75,7 +75,7 @@ read_config_data -replace -in $patt_spec -from_string {
           mode_name : lbist_sa ;//same as set_current_mode in lbist fault simulation 
           warmup_pattern_count : 4;
           begin_pattern : 0;
-          end_pattern : 1023 ;
+          end_pattern : 7 ;
 		      misr_compares : 1 ;
           // DiagnosisOptions {
           //  extract_flop_data : on ;
